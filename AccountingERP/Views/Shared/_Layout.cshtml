@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Accounting ERP", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (@HttpContext.Current.User.Identity.Name == "")
+                    {
+                        <li>@Html.ActionLink("Ana sayfa", "Index", "Home")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Ana sayfa", "Dashboard", "Home")</li>
+                    }
+
+                </ul>
+                @if (@HttpContext.Current.User.Identity.Name != "")
+                {
+                    <div align="right" style="color:white">
+                        @Html.ActionLink("Çıkış yap", "Logout", "User", new { area = "" }, new { @class = "navbar-left" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @if (ViewBag.DoneMsg != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-check"></i> Başarılı!</h5>
+                @ViewBag.DoneMsg
+            </div>
+        }
+        @if (ViewBag.FailMsg != null)
+        {
+            <br />
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-exclamation-triangle"></i> Hata!</h5>
+                @ViewBag.FailMsg
+            </div>
+        }
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Accounting ERP</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

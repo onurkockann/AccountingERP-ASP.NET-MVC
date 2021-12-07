@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using AccountingERP.Models
+@model Firm
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h3 class="title">@Model.FirmName</h3>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Magaza/Index" class="btn btn-danger btn-pri"><i class="fa fa-backward" aria-hidden="true"></i> Geri</a>
+            <div class="card-tools">
+            </div>
+        </div>
+        <div class="card-body" align="center">
+            <form action="/Magaza/Ekle" method="post" role="form" onsubmit="subFr()">
+                @if (Model != null)
+                {
+                    <input type="hidden" name="FirmID" value="@Model.FirmID" />
+                }
+                <div class="form-group col-md-6">
+                    <label>Firma Adı</label>
+                    @if (Model.FirmName == null)
+                    {
+                        <input value="" class="form-control" type="text" name="FirmName" placeholder="Firma adını giriniz" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    else
+                    {
+                        <input value="@Model.FirmName" class="form-control" type="text" name="FirmName" placeholder="Firma adını giriniz" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Adres</label>
+                    @if (Model.Adres == null)
+                    {
+                        <input value="" class="form-control" type="text" name="Adres" maxlength="100" placeholder="Adres giriniz" />
+                    }
+                    else
+                    {
+                        <input value="@Model.Adres" class="form-control" type="text" name="Adres" maxlength="100" placeholder="Adres giriniz" />
+                    }
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Telefon</label>
+                    @if (Model.Phone == null)
+                    {
+                        <input value="" class="form-control" type="text" name="Phone" maxlength="15" placeholder="Telefon giriniz" />
+                    }
+                    else
+                    {
+                        <input value="@Model.Phone" class="form-control" type="text" name="Phone" maxlength="15" placeholder="Telefon giriniz" />
+                    }
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Web Sayfası</label>
+                    @if (Model.WebSite == null)
+                    {
+                        <input value="" class="form-control" type="text" name="WebSite" maxlength="25" placeholder="Web sayfasi giriniz" />
+                    }
+                    else
+                    {
+                        <input value="@Model.WebSite" class="form-control" type="text" name="WebSite" maxlength="25" placeholder="Web sayfasi giriniz" />
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="buttons">Kaydet</button>
+            </form>
+        </div>
+        <div class="card-footer">
+            Lütfen firma adını boş bırakmayın.
+        </div>
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function subFr() {
+        document.getElementById("buttons").disabled = true;
+    }
+</script>

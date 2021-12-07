@@ -1,0 +1,469 @@
+﻿
+@{
+    ViewBag.Title = "Giderler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Model m = new Model();
+    FirmUser u = m.FirmUsers.FirstOrDefault(x => x.username == HttpContext.Current.User.Identity.Name);
+
+    List<Expense> gelirler = m.Expenses.ToList();
+
+    int[,] allValues = new int[370, 2];
+
+    foreach (Expense itemGe in gelirler)
+    {
+        if (itemGe.Firm.FirmID == ViewBag.magazaID)
+        {
+            DateTime getTarih = (DateTime)itemGe.EventDate;
+
+            TimeSpan ts = DateTime.Now.Subtract(getTarih);
+
+            int NumberOfDays = (int)ts.TotalDays;
+
+            if (NumberOfDays < 370)
+            {
+                allValues[NumberOfDays, 0] = NumberOfDays;
+                allValues[NumberOfDays, 1] += (int)itemGe.Amount;
+            }
+        }
+    }
+
+    int topVals = 0;
+}
+@using AccountingERP.Models
+@model List<Expense>
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Giderler</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Giderlerin Detay Sayfası</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" onClick="quest()">
+                    <i class="fas fa-question"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true" onClick="Otg()">30 Gün</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-profile" aria-selected="false" onClick="uAy()">3 Ay</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-messages" aria-selected="false" onClick="AAy()">6 Ay</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-settings" aria-selected="false" onClick="OniAy()">12 Ay</a>
+                </li>
+            </ul>
+            <div class="tab-custom-content">
+                <div class="tab-content" id="custom-content-above-tabContent">
+                    <div class="tab-pane fade active show" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                        <script type="text/javascript">
+                            google.charts.load('current', { 'packages': ['corechart'] });
+                            google.charts.setOnLoadCallback(drawChart);
+
+                            function drawChart() {
+                            var data = google.visualization.arrayToDataTable([
+                                ['Günler', 'Gider'],
+                                @{
+                                    DateTime today = new DateTime();
+                                    today = DateTime.Now;
+                                    today = today.AddMonths(-1);
+
+                                    TimeSpan tSp = DateTime.Now.Subtract(today);
+                                    int gunSay = (int)tSp.TotalDays;
+
+                                    int todayy = today.Day;
+                                    int monthh = today.Month;
+                                    int yearr = today.Year;
+                                    topVals = 0;
+
+                                    for (int k = gunSay; k >= 0; k--)
+                                    {
+                                        <text>
+                                        ['@todayy/@monthh/@yearr',  @allValues[k,1]],
+                                        </text>
+                                        topVals+= allValues[k, 1];
+                                        today = today.AddDays(+1);
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                    }
+                                    ViewBag.labelVal = "30 Günlük toplam Gider = " + topVals.ToString() + ViewBag.MKur;
+                                }
+                            ]);
+
+                            var options = {
+                                title: '30 Günlük Gider Akışı(@topVals.ToString() TL)',
+                                curveType: 'function',
+                                legend: {position: 'bottom' }
+                            };
+
+                            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                            chart.draw(data, options);
+                            }
+
+                            function Otg() {
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-1);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1]],
+                                            </text>
+                                            topVals += allValues[k, 1];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                        ViewBag.labelVal = "30 Günlük toplam Gider = " + topVals.ToString() + ViewBag.MKur;
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '30 Günlük Gider Akışı(@topVals.ToString() TL)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function uAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-3);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1]],
+                                            </text>
+                                            topVals += allValues[k, 1];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                        ViewBag.labelVal = "3 Aylık toplam Gider = " + topVals.ToString() + ViewBag.MKur;
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '3 Aylık Gider Akışı(@topVals.ToString() TL)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function AAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-6);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1]],
+                                            </text>
+                                            topVals += allValues[k, 1];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                        ViewBag.labelVal = "6 Aylık toplam Gider = " + topVals.ToString() + ViewBag.MKur;
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '6 Aylık Gider Akışı(@topVals.ToString() TL)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function OniAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-12);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1]],
+                                            </text>
+                                            topVals += allValues[k, 1];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                    }
+                                ]);
+                                var options = {
+                                    title: '12 Aylık Gider Akışı(@topVals.ToString() TL)',
+                                    curveType: 'function',
+                                    legend: { position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                        </script>
+                        <div id="curve_chart" style="width: 100%; height: 400px"></div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+
+                    </div>
+                    <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                        3
+                    </div>
+                    <div class="tab-pane fade active" id="custom-content-above-settings" role="tabpanel" aria-labelledby="custom-content-above-settings-tab">
+                        4
+                    </div>
+                </div>
+            </div>
+            <div align="right"><a href="/Gider/Ekle" class="btn btn-success rounded btn-pri"><i class="fa fa-plus" aria-hidden="true"></i> Yeni Gider Ekle</a></div>
+        </div>
+
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+        <!-- /.card-footer-->
+    </div>
+    <!-- /.card -->
+
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Giderlerin Listesi</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped ">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Gider Miktarı (TL)</th>
+                                    <th>Gider Tipi</th>
+                                    <th>Ödeyen</th>
+                                    <th>Açıklama</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Expense item in Model)
+                                {
+                                    if (item.Firm.FirmID == ViewBag.magazaID)
+                                    {
+                                        <tr>
+                                            <td>@item.EventDate</td>
+                                            <td>@item.Amount</td>
+                                            <td>@item.ExpenseType.TypeName</td>
+                                            @if (item.FirmUser1 != null)
+                                            {
+                                                <td>@item.FirmUser1.username</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Ortak Dağılım</td>
+                                            }
+
+                                            <td>@item.Description</td>
+                                            <td>
+                                                @if (u.Rank != -1)
+                                                {
+                                                    <a href="/Gider/Guncelle/@item.ExpenseID" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                                                    <a href="#" class="btn btn-danger rounded tdrSil" data-tdrid="@item.ExpenseID"><i class="fa fa-eraser" aria-hidden="true"></i> </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Gider Miktarı (TL)</th>
+                                    <th>Gider Tipi</th>
+                                    <th>Ödeyen</th>
+                                    <th>Açıklama</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+@section scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": true, "autoWidth": false, "sort": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+
+    $(".tdrSil").click(function () {
+
+        var sonuc = confirm("Kayıt silinsin mi?");
+        if (sonuc) {
+            var tdrId = $(this).data("tdrid");
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Gider/Sil/" + tdrId,
+                    success: function () {
+                        alert("Kayit silindi");
+                        window.location.replace("/Gider/Index");
+                    },
+                    error: function () {
+                        alert("Hata oluştu");
+                    }
+                });
+        }
+
+        else {
+            alert("İşlem iptal edildi");
+
+        }
+    }
+    );
+    </script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script type="text/javascript">
+    function quest() {
+        Swal.fire(
+            'Giderlerinizin detay sayfası',
+            'Bu bölümde giderleriniz ile ilgili tüm detaylara erişebilirsiniz. Üst panelde giderlerinize ait grafik dağılımını görebilir ve yeni gider ekleyebilirsiniz. Alt panelde ise bütün gider kayıt işlemlerinizi bir tabloda bulabilirsiniz!',
+            'question'
+        )
+    }
+    </script>
+
+}

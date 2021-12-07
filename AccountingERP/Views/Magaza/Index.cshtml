@@ -1,0 +1,239 @@
+﻿
+@{
+    ViewBag.Title = "Mağaza";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using AccountingERP.Models
+@model List<FirmUser>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Firma</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <!-- Profile Image -->
+                <div class="card card-dark card-outline">
+                    <div class="card-body box-profile">
+
+                        <h3 class="profile-username text-center">@ViewBag.magaza</h3>
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Paydaş Sayısı</b> <a class="float-right">@ViewBag.Ortaklar</a>
+                            </li>
+                        </ul>
+                        @if (ViewBag.kisiYetki != -1)
+                        {
+                            <a href="/Magaza/Guncelle/@ViewBag.magazaID" class="btn btn-primary btn-block"><b><i class="fa fa-edit" aria-hidden="true"></i> Firma Bilgilerini Düzenle</b></a>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-primary btn-block"><b><i class="fa fa-edit" aria-hidden="true"></i> Firma Bilgilerini Düzenle</b></a>
+                        }
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <!-- About Me Box -->
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title"> Firma detay</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-sitemap mr-1"></i> Web Sayfası</strong>
+
+                        <p class="text-muted">
+                            <a href="http://@ViewBag.WebSayfasi" target="_blank">@ViewBag.WebSayfasi</a>
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Adres</strong>
+
+                        <p class="text-muted">@ViewBag.Adres</p>
+
+                        <hr>
+                        <strong><i class="fa fa-phone"></i> Telefon</strong>
+
+                        <p class="text-muted">@ViewBag.Telefon</p>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Firmaya kayıtlı olan kullanıcılar</h3>
+                        <div class="card-tools">
+                        </div>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Kullanıcı Adı</th>
+                                        <th>Mail</th>
+                                        <th>Telefon</th>
+                                        <th>Ad</th>
+                                        <th>Soyad</th>
+                                        <th>Yetki</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (FirmUser itemm in Model)
+                                    {
+                                        if (HttpContext.Current.User.Identity.Name == itemm.username)
+                                        {
+                                            if (itemm.Rank == 1 || itemm.Rank == -1)
+                                            {
+                                                foreach (FirmUser item in Model)
+                                                {
+                                                    if (item.FirmID == ViewBag.magazaID)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.username</td>
+                                                            <td>@item.mail</td>
+                                                            @if (item.Phone != null && item.Phone.Length == 13 && item.Phone[0].ToString() == "+")
+                                                            {
+                                                                <td><a href="http://wa.me/@item.Phone" class="btn btn-default btn-pri" target="_blank"><i class="fa fa-phone" aria-hidden="true"></i> @item.Phone</a></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@item.Phone</td>
+                                                            }
+                                                            <td>@item.name</td>
+                                                            <td>@item.surname</td>
+                                                            @if (item.Rank == 0)
+                                                            {
+                                                                <td>Personel</td>
+                                                                if (ViewBag.kisiYetki != -1)
+                                                                {
+                                                                    <td><a href="/Magaza/GuncelleUser/@item.FirmUserID" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </a></td>
+                                                                    <td><a href="#" class="btn btn-danger rounded tdrSil" data-tdrid="@item.FirmUserID"><i class="fa fa-eraser" aria-hidden="true"></i> </a></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td><a href="#" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </a></td>
+                                                                    <td><a href="#" class="btn btn-danger rounded"><i class="fa fa-eraser" aria-hidden="true"></i> </a></td>
+                                                                }
+
+                                                            }
+                                                            else if (item.Rank == 1 || item.Rank == -1)
+                                                            {
+                                                                <td>Sahip/Paydaş</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            }
+
+
+
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+
+
+                                            else if (itemm.Rank == 0)
+                                            {
+                                                foreach (FirmUser item in Model)
+                                                {
+                                                    if (item.FirmID == ViewBag.magazaID)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.username</td>
+                                                            <td>@item.mail</td>
+                                                            @if (item.Phone != null && item.Phone.Length == 13 && item.Phone[0].ToString() == "+")
+                                                            {
+                                                                <td><a href="http://wa.me/@item.Phone" class="btn btn-default" target="_blank"><i class="fa fa-phone" aria-hidden="true"></i> @item.Phone</a></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@item.Phone</td>
+                                                            }
+                                                            <td>@item.name</td>
+                                                            <td>@item.surname</td>
+                                                            @if (item.Rank == 0)
+                                                            {
+                                                                <td>Personel</td>
+                                                            }
+                                                            else if (item.Rank == 1)
+                                                            {
+                                                                <td>Sahip/Paydaş</td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><!-- /.card-body -->
+                    <div class="card-footer">
+                        @if (ViewBag.kisiYetki == 1)
+                        {
+                            <a href="/Magaza/AddUser/" class="btn btn-success btn-pri"><i class="fa fa-plus" aria-hidden="true"></i> Kullanıcı Ekle</a>
+                        }
+                        <a href="/Profil/Index/" class="btn btn-warning btn-pri"><i class="fa fa-plus" aria-hidden="true"></i> Profil Sayfam</a>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+@section scripts{
+
+    <script src="~/Content/assets/js/required/jquery-1.11.1.min.js"></script>
+
+    <script>
+        $(".tdrSil").click(function () {
+
+            var sonuc = confirm("Kayıt silinsin mi?");
+            if (sonuc) {
+                var tdrId = $(this).data("tdrid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Magaza/SilUser/" + tdrId,
+                        success: function () {
+                            alert("Kayit silindi");
+                            window.location.replace("/Magaza/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+
+    </script>
+
+}

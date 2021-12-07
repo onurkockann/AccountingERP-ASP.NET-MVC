@@ -1,0 +1,426 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int ntdrm = 0;
+    Model m = new Model();
+
+    int j = 0;
+
+    List<Income> gelirler = m.Incomes.ToList();
+    List<Expense> giderler = m.Expenses.ToList();
+
+    int[,] allValues = new int[32, 4];
+
+    foreach (Income itemGe in gelirler)
+    {
+        if (itemGe.FirmID == ViewBag.magazaID)
+        {
+            DateTime getTarih = (DateTime)itemGe.EventDate;
+
+            TimeSpan ts = DateTime.Now.Subtract(getTarih);
+
+            int NumberOfDays = (int)ts.TotalDays;
+
+            if (NumberOfDays < 32)
+            {
+                allValues[NumberOfDays, 0] = NumberOfDays;
+                allValues[NumberOfDays, 1] += (int)itemGe.Amount;
+                allValues[NumberOfDays, 3] += (int)itemGe.Amount;
+            }
+        }
+    }
+
+    foreach (Expense itemGi in giderler)
+    {
+        if (itemGi.FirmID == ViewBag.magazaID)
+        {
+            DateTime getTarih = (DateTime)itemGi.EventDate;
+
+            TimeSpan ts = DateTime.Now.Subtract(getTarih);
+
+            int NumberOfDays = (int)ts.TotalDays;
+
+            if (NumberOfDays < 32)
+            {
+                allValues[NumberOfDays, 0] = NumberOfDays;
+                allValues[NumberOfDays, 2] += (int)itemGi.Amount;
+                allValues[NumberOfDays, 3] -= (int)itemGi.Amount;
+            }
+        }
+    }
+
+    FirmUser u = m.FirmUsers.FirstOrDefault(x => x.username == HttpContext.Current.User.Identity.Name);
+
+}
+@using AccountingERP.Models
+@model List <Article>
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@ViewBag.Title</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+            </div>
+            <!-- ./col -->
+            <!-- small box -->
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@ViewBag.uyeler</h3>
+
+                        <p>Mağaza Üyesi</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
+                    <a href="/Magaza/Index" class="small-box-footer">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@ViewBag.netDurum TL</h3>
+
+                        <p>Net Durum</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-money-bill"></i>
+                    </div>
+                    <a href="/NetDurum/Index" class="small-box-footer">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+            <!-- Left col -->
+            <div class="col-lg-7">
+                <!-- Custom tabs (Charts with tabs) style="height:200%;" -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Nakit Akışı
+                        </h3>
+                        <div class="card-tools">
+                            <ul class="nav nav-pills ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#" data-toggle="tab" onClick="otuzGun()">30 Gün</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-toggle="tab" onClick="odGun()">14 Gün</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                        <script type="text/javascript">
+                    google.charts.load('current', { 'packages': ['bar'] });
+                    google.charts.setOnLoadCallback(drawChart);
+
+                    function drawChart() {
+
+                        var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                        @{
+
+                            DateTime today = new DateTime();
+                            today = DateTime.Now;
+                            today = today.AddMonths(-1);
+
+                            TimeSpan tSp = DateTime.Now.Subtract(today);
+                            int gunSay = (int)tSp.TotalDays;
+
+                            int todayy = today.Day;
+                            int monthh = today.Month;
+                            int yearr = today.Year;
+
+                            for (int t = gunSay; t >= 0; t--) {
+                                <text>
+                                    dataRows.push(['@todayy/@monthh/@yearr', @allValues[t, 1], @allValues[t, 2], @allValues[t, 3]]);
+                                </text>
+                                ntdrm += allValues[t, 3];
+
+
+                                today = today.AddDays(+1);
+
+                                todayy = today.Day;
+                                monthh = today.Month;
+                                yearr = today.Year;
+                            }
+                        }
+
+                        var data = google.visualization.arrayToDataTable(dataRows);
+
+
+                        var options = {
+                            chart: {
+                                title: 'Son 30 güne ait gelir gider tablonuz',
+                                subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                            }
+                        };
+
+                        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                        chart.draw(data, google.charts.Bar.convertOptions(options));
+                    }
+
+
+                    function otuzGun() {
+
+                        google.charts.load('current', { 'packages': ['bar'] });
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+
+                            var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                            @{
+
+                                ntdrm = 0;
+
+                                today = new DateTime();
+                                today = DateTime.Now;
+                                today = today.AddMonths(-1);
+
+                                tSp = DateTime.Now.Subtract(today);
+                                gunSay = (int)tSp.TotalDays;
+
+                                todayy = today.Day;
+                                monthh = today.Month;
+                                yearr = today.Year;
+
+                                for (int t = gunSay; t >= 0; t--) {
+                                    <text>
+                                        dataRows.push(['@todayy/@monthh/@yearr', @allValues[t, 1], @allValues[t, 2], @allValues[t, 3]]);
+                                    </text>
+                                    ntdrm += allValues[t, 3];
+
+                                    today = today.AddDays(+1);
+
+                                    todayy = today.Day;
+                                    monthh = today.Month;
+                                    yearr = today.Year;
+                                }
+                            }
+
+                            var data = google.visualization.arrayToDataTable(dataRows);
+
+
+                            var options = {
+                                chart: {
+                                    title: 'Son 30 güne ait gelir gider tablonuz',
+                                    subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                }
+                            };
+
+                            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                            chart.draw(data, google.charts.Bar.convertOptions(options));
+                        }
+
+                    }
+
+                    function odGun() {
+
+                        google.charts.load('current', { 'packages': ['bar'] });
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+
+                            var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                            @{
+                                ntdrm = 0;
+
+                                today = new DateTime();
+                                today = DateTime.Now;
+                                today = today.AddDays(-14);
+
+                                todayy = today.Day;
+                                monthh = today.Month;
+                                yearr = today.Year;
+
+                                for (int t = 14; t >= 0; t--) {
+                                    <text>
+                                        dataRows.push(['@todayy/@monthh/@yearr', @allValues[t, 1], @allValues[t, 2], @allValues[t, 3]]);
+                                    </text>
+                                    ntdrm += allValues[t, 3];
+
+
+                                    today = today.AddDays(+1);
+
+                                    todayy = today.Day;
+                                    monthh = today.Month;
+                                    yearr = today.Year;
+                                }
+                            }
+
+                            var data = google.visualization.arrayToDataTable(dataRows);
+
+
+                            var options = {
+                                chart: {
+                                    title: 'Son 2 haftaya ait gelir gider tablonuz',
+                                    subtitle: '2 haftalık akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                }
+                            };
+
+                            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                            chart.draw(data, google.charts.Bar.convertOptions(options));
+                        }
+
+                    }
+
+                        </script>
+                        <div id="columnchart_material" style="width:100%; height:400px;" align="center"></div>
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <!-- DIRECT CHAT -->
+            </div>
+                <div class="col-lg-5">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-book"></i> Mağaza Bloğu Ve Sistem Uyarıları</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" onClick="blogQuest()">
+                                <i class="fas fa-question"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- Conversations are loaded here -->
+                        <div class="direct-chat-messages">
+                            @foreach (Article item in Model)
+                            {
+                                if (item.FirmUser != null)
+                                {
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-right"> @item.FirmUser.username</span>
+                                            <span class="direct-chat-timestamp float-left">@item.EventDate</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                        <img class="direct-chat-img" src="~/sp/dist/img/spLogo.png" alt="Firm chat post">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            @item.Content
+                                            @if ((item.FirmUser.username == HttpContext.Current.User.Identity.Name || item.FirmUser.Firm == null))
+                                            {
+                                                <div align="right"><a href="#" class="btn btn-danger rounded tdrSil" data-tdrid="@item.ArticleID"><strong>x</strong> </a></div>
+                                            }
+
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-left"> Sistem</span>
+                                            <span class="direct-chat-timestamp float-right">@item.EventDate</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                        <img class="direct-chat-img" src="~/sp/dist/img/spLogo.png" alt="Firm chat post">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            @item.Content
+                                            <div align="right">
+                                                <a href="#" class="btn btn-success rounded tdrSil" data-tdrid="@item.ArticleID"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                }
+                            }
+                            <hr />
+                            <div align="center">
+                                @*@Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("Dashboard", new { sayfa }))*@
+                            </div>
+                        </div>
+                        <!--/.direct-chat-messages-->
+                        <!-- /.direct-chat-pane -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <form action="/Home/Dashboard" method="post" role="form" onsubmit="subFr()">
+                            <textarea name="Content" required="" style="width:100%" maxlength="4000" placeholder="Duyuru yayınlayın"> </textarea><br />
+                            <div align="center">
+                                <button type="submit" class="btn btn-primary" id="buttons"><i class="fas fa-arrow-up"></i> Yayınla</button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <!-- /.card-footer-->
+                </div>
+            
+        </div>
+        <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+<script type="text/javascript">
+    function blogQuest() {
+        Swal.fire(
+            'Mağaza bloğu',
+            'Bu bölümde mağazanızla ilgili uyarılar sistem tarafından yayınlanır. İsterseniz sizde gönderi paylaşabilirsiniz. Paylaşılan gönderileri tüm mağaza üyeleri görebilir!',
+            'question'
+        )
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function subFr() {
+        document.getElementById("buttons").disabled = true;
+    }
+
+    $(".tdrSil").click(function () {
+        var sonuc = confirm("Gönderi mağazadan silinecek, işleme devam edilsinmi?");
+        if (sonuc) {
+            var tdrId = $(this).data("tdrid");
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Home/PostSil/" + tdrId,
+                    success: function () {
+                        alert("Gönderi başarıyla kaldırıldı.");
+                        window.location.replace("/Home/Dashboard");
+                    },
+                    error: function () {
+                        alert("Hata oluştu");
+                    }
+                });
+        }
+
+        else {
+            alert("İşlem iptal edildi");
+
+        }
+    }
+    );
+
+</script>

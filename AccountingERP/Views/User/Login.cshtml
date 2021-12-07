@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AccountingERP.Models.FirmUser
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title - Accounting ERP</title>
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="/Home/Index"><b>Accounting ERP</b></a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Oturumunuzu başlatmak için lütfen giriş yapın</p>
+
+                <form action="/User/Login" method="post" role="form" onsubmit="subFr()">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Kullanıcı Adı" required="" name="username" minlength="4" maxlength="25">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" class="form-control" placeholder="Şifre" required="" name="pw" minlength="4" maxlength="25">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block" id="buttons">Giriş Yap</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+                <p class="mb-1">
+                    <a href="/User/FgotPassword">Şifremi Unuttum</a>
+                </p>
+                <p class="mb-0">
+                    Mağaza ve kullanıcı kaydın yokmu?<a href="/User/Register/" class="text-center">Kayıt ol</a>
+                </p>
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+    <script>
+        function subFr() {
+            document.getElementById("buttons").disabled = true;
+        }
+    </script>
+</body>

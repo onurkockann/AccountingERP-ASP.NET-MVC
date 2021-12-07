@@ -1,0 +1,647 @@
+﻿
+@{
+    ViewBag.Title = "Net Durum";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Model m = new Model();
+    FirmUser u = m.FirmUsers.FirstOrDefault(x => x.username == HttpContext.Current.User.Identity.Name);
+    int fID = ViewBag.magazaID;
+
+    List<Income> gelirler = m.Incomes.Where(x => x.FirmID == fID).ToList();
+    List<Expense> giderler = m.Expenses.Where(x => x.FirmID == fID).ToList();
+
+    int[,] allValues = new int[370, 3];
+
+    foreach (Income itemGe in gelirler)
+    {
+        DateTime getTarih = (DateTime)itemGe.EventDate;
+
+        TimeSpan ts = DateTime.Now.Subtract(getTarih);
+
+        int NumberOfDays = (int)ts.TotalDays;
+
+        if (NumberOfDays < 370)
+        {
+            allValues[NumberOfDays, 0] = NumberOfDays;
+            allValues[NumberOfDays, 1] += (int)itemGe.Amount;
+        }
+    }
+
+    foreach (Expense itemGi in giderler)
+    {
+        DateTime getTarih = (DateTime)itemGi.EventDate;
+
+        TimeSpan ts = DateTime.Now.Subtract(getTarih);
+
+        int NumberOfDays = (int)ts.TotalDays;
+
+        if (NumberOfDays < 370)
+        {
+            allValues[NumberOfDays, 0] = NumberOfDays;
+            allValues[NumberOfDays, 2] += (int)itemGi.Amount;
+        }
+    }
+
+    int topVals = 0;
+
+    List<MTIPartner> epara = m.MTIPartners.Where(x => x.FirmID == fID).ToList();
+}
+
+@using AccountingERP.Models
+@model List<FirmUser>
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Muhasebe Net Durum</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="col-lg-12 connectedSortable">
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Muhasebe Net Durum Detay Sayfası</h4>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" onClick="quest()">
+                        <i class="fas fa-question"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive bs-example widget-shadow" data-example-id="bordered-table">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-plus" aria-hidden="true"></i> Toplam Gelir</th>
+                                <th><i class="fa fa-minus" aria-hidden="true"></i> Toplam Gider</th>
+                                <th>Net Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@ViewBag.topGelir @ViewBag.Mkur</td>
+                                <td>@ViewBag.topGider @ViewBag.Mkur</td>
+                                <td><strong>@ViewBag.MNetDurum @ViewBag.Mkur</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div align="center" class="block-controls">
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href="/Gelir/Index" class="btn btn-success rounded">Tüm Gelirler</a>
+
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href="/Gider/Index" class="btn btn-danger rounded">Tüm Giderler</a>
+
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href="/Alacak/Index" class="btn btn-info rounded">Alacak & Verecek Notları</a>
+
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                Mağaza Detay
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Gelir Giderlerin Dağılımı</h4>
+                <div class="card-tools">
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true" onClick="Otg()">30 Gün</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-profile" aria-selected="false" onClick="uAy()">3 Ay</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-messages" aria-selected="false" onClick="AAy()">6 Ay</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-settings" aria-selected="false" onClick="OniAy()">12 Ay</a>
+                    </li>
+                </ul>
+                <div class="tab-custom-content">
+                    <div class="tab-content" id="custom-content-above-tabContent">
+                        <div class="tab-pane fade active show" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                            <script type="text/javascript">
+                            google.charts.load('current', { 'packages': ['corechart'] });
+                            google.charts.setOnLoadCallback(drawChart);
+
+                            function drawChart() {
+                            var data = google.visualization.arrayToDataTable([
+                                ['Günler', 'Gelir', 'Gider'],
+                                @{
+                                    DateTime today = new DateTime();
+                                    today = DateTime.Now;
+                                    today = today.AddMonths(-1);
+
+                                    TimeSpan tSp = DateTime.Now.Subtract(today);
+                                    int gunSay = (int)tSp.TotalDays;
+
+                                    int todayy = today.Day;
+                                    int monthh = today.Month;
+                                    int yearr = today.Year;
+                                    topVals = 0;
+
+                                    for (int k = gunSay; k >= 0; k--)
+                                    {
+                                        <text>
+                                        ['@todayy/@monthh/@yearr',  @allValues[k,1], @allValues[k,2]],
+                                        </text>
+                                        topVals+= allValues[k, 1] - allValues[k,2];
+                                        today = today.AddDays(+1);
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                    }
+                                }
+                            ]);
+
+                            var options = {
+                                title: '30 Günlük Gelir Gider Akışı(Net Kar=@topVals.ToString() @ViewBag.MKur)',
+                                curveType: 'function',
+                                legend: {position: 'bottom' }
+                            };
+
+                            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                            chart.draw(data, options);
+                            }
+
+                            function Otg() {
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gelir', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-1);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1], @allValues[k,2]],
+                                            </text>
+                                            topVals += allValues[k, 1] - allValues[k, 2];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '30 Günlük Gelir Gider Akışı(Net Kar=@topVals.ToString() @ViewBag.MKur)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function uAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gelir', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-3);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1], @allValues[k,2]],
+                                            </text>
+                                            topVals += allValues[k, 1] - allValues[k, 2];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                        ViewBag.labelVal = "3 Aylık toplam gelir = " + topVals.ToString() + ViewBag.MKur;
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '3 Aylık Gelir Gider Akışı(Net Kar=@topVals.ToString() @ViewBag.MKur)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function AAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gelir', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-6);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1], @allValues[k,2]],
+                                            </text>
+                                            topVals += allValues[k, 1] - allValues[k,2];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                    }
+                                ]);
+
+                                var options = {
+                                    title: '6 Aylık Gelir Gider Akışı(Net Kar=@topVals.ToString() @ViewBag.MKur)',
+                                    curveType: 'function',
+                                    legend: {position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            function OniAy() {
+                            google.charts.setOnLoadCallback(drawChartUc);
+                            function drawChartUc() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Günler', 'Gelir', 'Gider'],
+                                    @{
+                                        today = new DateTime();
+                                        today = DateTime.Now;
+                                        today = today.AddMonths(-12);
+
+                                        tSp = DateTime.Now.Subtract(today);
+                                        gunSay = (int)tSp.TotalDays;
+
+                                        todayy = today.Day;
+                                        monthh = today.Month;
+                                        yearr = today.Year;
+                                        topVals = 0;
+
+                                        for (int k = gunSay; k >= 0; k--)
+                                        {
+                                            <text>
+                                            ['@todayy/@monthh/@yearr',  @allValues[k,1], @allValues[k,2]],
+                                            </text>
+                                            topVals += allValues[k, 1] - allValues[k,2];
+                                            today = today.AddDays(+1);
+
+                                            todayy = today.Day;
+                                            monthh = today.Month;
+                                            yearr = today.Year;
+                                        }
+                                    }
+                                ]);
+                                var options = {
+                                    title: '12 Aylık Gelir Gider Akışı(Net Kar=@topVals.ToString() @ViewBag.MKur)',
+                                    curveType: 'function',
+                                    legend: { position: 'bottom' }
+                                };
+
+                                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                                chart.draw(data, options);
+                                }
+                            }
+
+                            </script>
+                            <div id="curve_chart" style="width: 100%; height: 400px"></div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+
+                        </div>
+                        <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                            3
+                        </div>
+                        <div class="tab-pane fade active" id="custom-content-above-settings" role="tabpanel" aria-labelledby="custom-content-above-settings-tab">
+                            4
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                Mağaza Detay
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+
+    </section>
+
+    @if (ViewBag.PCount > 1)
+    {
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Paydaşlar Arası Net Durum</h4>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" onClick="questPay()">
+                            <i class="fas fa-question"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive bs-example widget-shadow" data-example-id="bordered-table">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Paydaşlar</th>
+                                    <th>Paydan Alınan Miktar</th>
+                                    <th>Paylar</th>
+                                    <th>Ortaksal Net Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (FirmUser item in Model)
+                                {
+
+                                    if (item.Rank == 1)
+                                    {
+                                        <tr>
+                                            <td><h2>@item.username</h2></td>
+                                            @*<td>Mağazanın net durumu - ortak1 net durum</td>*@
+                                            <td>@{double a = Math.Round(((ViewBag.MNetDurum) / ViewBag.PCount) - item.NetState, 3);}@a.ToString() @ViewBag.Mkur</td>
+                                            @*<td>Mağazanın net durumu(kar) / paydaş</td>*@
+                                            <td>@{double b = Math.Round(((ViewBag.MNetDurum) / ViewBag.PCount), 3);}@b.ToString() @ViewBag.Mkur</td>
+                                            @if (item.NetState < 0)
+                                            {
+                                                <td style="background-color:red"><strong>@item.NetState @ViewBag.MKur</strong></td>
+                                            }
+                                            else
+                                            {
+                                                <td><strong>@item.NetState @ViewBag.MKur</strong></td>
+                                            }
+
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    Paydaşlar Detay
+                </div>
+                <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+
+            <div class="row">
+                <!-- Left col -->
+                <section class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Paydaşlar arası para aktarımları</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="card-body table-responsive p-0">
+                                <table id="example2" class="table table-bordered table-striped ">
+                                    <thead>
+                                        <tr>
+                                            <th>Aktaran Kullanıcı</th>
+                                            <th>Miktar</th>
+                                            <th>Alan Kullanıcı</th>
+                                            <th>Tarih</th>
+                                            <th>Sil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (MTIPartner item in epara)
+                                        {
+                                            if (item.FirmID == ViewBag.magazaID)
+                                            {
+                                                <tr>
+                                                    <td>@m.FirmUsers.FirstOrDefault(x => x.FirmUserID == item.SenderID).username</td>
+                                                    <td>@item.Amount TL</td>
+                                                    <td>@m.FirmUsers.FirstOrDefault(x => x.FirmUserID == item.ReceiverID).username</td>
+                                                    <td>@item.EventDate</td>
+                                                    <td><a href="#" class="btn btn-danger rounded sgSil" data-sgid="@item.MTIPartnersID"><i class="fa fa-eraser" aria-hidden="true"></i> </a></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            Ortaklar arası bütün para aktarım işlemlerinin dökümü
+                        </div>
+                        <!-- /.card-footer-->
+                    </div>
+                </section>
+
+                <!-- /.Left col -->
+                <!-- right col (We are only adding the ID to make the widgets sortable)-->
+                <section class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Yeni Para Aktarım İşlemi</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body" align="center">
+                            <form action="/NetDurum/EkleSG" method="post" role="form" onsubmit="subFr()">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label>Aktaran kullanıcı</label><br />
+                                        @if (u.Rank != -1)
+                                        {
+                                            @Html.DropDownList("Paydaslar")
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Miktar (TL)</label>
+                                        <input value="" class="form-control" type="number" name="MiktarSG" placeholder="Miktarı girin" required="" max="9999999999999999" min="0.001" step=".001" style="border-block-color:red" />
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Alan Kullanıcı</label><br />
+                                        @if (u.Rank != -1)
+                                        {
+                                            @Html.DropDownList("PaydaslarSec")
+                                        }
+
+                                    </div>
+                                </div>
+                                <br />
+                                <hr />
+                                @if (u.Rank != -1)
+                                {
+                                    <button type="submit" id="buttons" class="btn btn-success">İşlemi Kaydet</button>
+                                }
+
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            Firma ortakları arası elden para aktarım işlemi gerçekleştirme bölümü. Bu işlem sonucunda parayı veren kullanıcıya verilen miktar kadar alacak, parayı alan kullanıcıya ise borç yazılacaktır.
+                            <br />Elden para aktarımı işlemleriniz toplam gelir ve giderlerinizden bağımsız yapılan ortaklar arası borç alma/kapatma durumlarını gerçekler ve net durumunuza yansıtılır.
+                        </div>
+                        <!-- /.card-footer-->
+                    </div>
+                </section>
+                <!-- right col -->
+            </div>
+
+        </section>
+
+
+    }
+</section>
+
+@section scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(".sgSil").click(function () {
+
+            var sonuc = confirm("Elden para aktarma kaydı silinsin mi? Bu işlem geri alınamaz!! Kayıt silindikten sonra ortakların borç durumları, parayı alan ve veren paydaşlar için kayıttaki miktar kadar etkilenecektir. Not: Eğer bu işlem farklı ortaklıklar içerisinde gerçekleşen geçmiş bir döküm ise, net tabloya etkimez sadece kayıt silinir.");
+            if (sonuc) {
+                var sgId = $(this).data("sgid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/NetDurum/SilSG/" + sgId,
+                        success: function () {
+                            alert("Kayit silindi");
+                            window.location.replace("/NetDurum/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": true, "autoWidth": false, "sort": false, "paging": false,
+                "buttons": ["colvis", "csv", "excel", "pdf", "print"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": false,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+
+
+        function subFr() {
+            document.getElementById("buttons").disabled = true;
+        }
+    </script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script type="text/javascript">
+        function quest() {
+            Swal.fire(
+                'Gelir giderlerin detay sayfası',
+                'Bu bölümde mağazanıza ait yaptığınız bütün gelir giderlerin sonuç dökümlerini görebilirsiniz. Yapmış olduğunuz toplam geliri, toplam gideri ve net karınızı üst bölümde görebilirsiniz. Bi alt bölümünde ise zamanlara yayılan grafik dağılımlarını bulabilirsiniz!',
+                'question'
+            )
+        }
+
+        function questPay() {
+            Swal.fire(
+                'Paydaşların detay bölümü',
+                'Bu bölüm ortak/paydaşlarla çalışan mağazalar içindir. Tabloda bulunan pay kısmı, toplam kardan kişiye düşen payı temsil ederken Paydan alınan miktar kısmı ise görülen kişinin bu zamana kadar bu paydan ne kadar aldığını temsil etmektedir. Sonuç kısmı olarak Ortaksal net durum sütununda ise ortakların birbirine borç veya alacak durumlarını belirtir. Örnek;Kırmızı hücre ile gösterilen paydaş borçlu durumdadır.',
+                'question'
+            )
+        }
+    </script>
+}
+

@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "Profil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string personel = "Personel";
+    string owner = "Sahip/Paydaş";
+
+    Model m = new Model();
+    FirmUser u = m.FirmUsers.FirstOrDefault(x => x.username == HttpContext.Current.User.Identity.Name);
+}
+@using AccountingERP.Models
+@model FirmUser
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Profil Detay</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <h3 class="profile-username text-center">@Model.username</h3>
+
+                        <p class="text-muted text-center">@Model.Firm.FirmName</p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Yetki:</b>
+                                <a class="float-right">
+                                    @if (Model.Rank == 0)
+                                    {
+                                        @personel;
+                                    }
+                                    else
+                                    {
+                                        @owner;
+                                    }
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Mail:</b> <a class="float-right">@Model.mail</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Telefon:</b> <a class="float-right">@Model.Phone</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <!-- About Me Box -->
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Hakkımda</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Ayarlar</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="activity">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <strong><i class="fas fa-store mr-1"></i> İlişkili mağaza</strong>
+
+                                    <p class="text-muted">
+                                        @Model.Firm.FirmName
+                                    </p>
+
+                                    <hr>
+                                    <strong><i class="fas fa-user-check mr-1"></i> Kullanıcı Adı</strong>
+
+                                    <p class="text-muted">
+                                        @Model.username
+                                    </p>
+
+                                    <hr>
+
+                                    <strong><i class="far fa-user-circle mr-1"></i> Ad/Soyad</strong>
+
+                                    <p class="text-muted">@Model.name @Model.surname</p>
+
+                                    @if (u.Rank != -1)
+                                    {
+                                        <div align="right">
+                                            <a href="/Profil/GuncelleUser/@Model.FirmUserID" class="btn btn-primary btn-pri"><i class="fa fa-edit" aria-hidden="true"></i> Düzenle</a>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="settings">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="title">Şifreni değiştir</h3>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <form action="/Profil/ChgPw" method="post" role="form">
+                                                    <label>Eski Şifre</label>
+                                                    <input value="" class="form-control" type="password" name="pwold" maxlength="25" placeholder="Eski Şifre" required="" />
+                                                    <br />
+                                                    <label>Yeni Şifre</label>
+                                                    <input value="" class="form-control" type="password" name="pwnew1" minlength="4" maxlength="25" placeholder="Yeni Şifre" required="" />
+                                                    <br />
+                                                    <label>Yeni Şifre Tekrar</label>
+                                                    <input value="" class="form-control" type="password" name="pwnew2" minlength="4" maxlength="25" placeholder="Yeni Şifre Tekrar" required="" />
+                                                    <br />
+                                                    @if (u.Rank != -1)
+                                                    {
+                                                        <div align="center">
+                                                            <input type="submit" class="btn btn-primary" value="Onayla" />
+                                                        </div>
+                                                    }
+
+                                                </form>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @if (Model.Rank == 1 && Model.Firm.PartnerCount > 1)
+                                        {
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Yetkini düşür</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div align="right">
+                                                        <button type="submit" class="btn btn-danger" onclick="myFunction()" id="hpd">Hesabımı Personele Düşür</button>
+                                                    </div>
+                                                    <p><strong>Uyarı: Bu işlem geri alınamaz!</strong> Hesabınızı personele düşürmek sizi Accounting ERP de artık ortak olarak gösterilmenize son verir. Hesabınızı personele çektikten sonra firmadaki diğer paydaşlar sizi mağazadan kaldırabilir veya bilgilerinizi değiştirebilir.</p>
+                                                    <div id="myP" style="visibility:hidden">
+                                                        <form action="/Profil/Downgrade" method="post" role="form" onkeydown="return event.key != 'Enter';">
+                                                            <label>Şifre</label>
+                                                            <input value="" class="form-control" type="password" name="pw" maxlength="25" placeholder="Devam etmek için şifrenizi girin" required="" />
+                                                            <br />
+                                                            <input type="hidden" name="KullaniciID" value="@Model.FirmUserID" />
+                                                            <input type="button" id="buttonf" class="btn btn-danger" onclick="subFr(this.form)" value="Hesabımı Personele Düşür" />
+                                                            <button type="button" class="btn btn-info" onclick="myFunctionV()">Vazgeç</button>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p>Şifrenizi değiştirmek için ilk kısma mevcut şifrenizi girin. Yeni şifrenizi onaylayarak 2 kere girdikten sonra şifre değiştirme işleminiz tamamlanır.</p>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+    function myFunction() {
+        document.getElementById("myP").style.visibility = "visible";
+        document.getElementById("hpd").style.visibility = "hidden";
+    }
+
+    function myFunctionV() {
+        document.getElementById("myP").style.visibility = "hidden";
+        document.getElementById("hpd").style.visibility = "visible";
+    }
+
+    function subFr(form) {
+        document.getElementById("buttonf").disabled = true;
+        form.submit();
+    }
+
+</script>

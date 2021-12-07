@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "AddUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using AccountingERP.Models
+@model FirmUser
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                @if (@ViewBag.magaza != null)
+                {
+                    <h2 class="title1">@ViewBag.magaza İçin Üye Oluştur</h2>
+                }
+                else
+                {
+                    <h2 class="title1">Kullanıcı Formu</h2>
+                }
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Magaza/Index" class="btn btn-danger btn-pri"><i class="fa fa-backward" aria-hidden="true"></i> Geri</a>
+            <div class="card-tools">
+            </div>
+        </div>
+        <div class="card-body" align="center">
+            <form action="/Magaza/AddUser" method="post" role="form" onsubmit="subFr()">
+                @if (Model != null)
+                {
+                    <input type="hidden" name="FirmUserID" value="@Model.FirmUserID" />
+                }
+                <div align="center" class="input-group mb-3 col-md-6">
+                    @if (Model.username == null)
+                    {
+                        <input value="" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red " />
+                    }
+                    else
+                    {
+                        <input value="@Model.username" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div align="center" class="input-group mb-3 col-md-6">
+                    @if (Model.pw == null)
+                    {
+                        <input value="" class="form-control" type="text" name="pw" placeholder="Şifre" minlength="4" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    else
+                    {
+                        <input value="@Model.pw" class="form-control" type="text" name="pw" placeholder="Şifre" minlength="4" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div align="center" class="input-group mb-3 col-md-6">
+                    @if (Model.mail == null)
+                    {
+                        <input value="" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    else
+                    {
+                        <input value="@Model.mail" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div align="center" class="input-group mb-3 col-md-6">
+                    @if (Model.Phone == null)
+                    {
+                        <input value="+90" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
+                    }
+                    else
+                    {
+                        <input value="@Model.Phone" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
+                    }
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-phone"></span>
+                        </div>
+                    </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    @if (Model.name == null)
+                    {
+                        <input value="" class="form-control" type="text" name="name" maxlength="25" placeholder="Ad" />
+                    }
+                    else
+                    {
+                        <input value="@Model.name" class="form-control" type="text" name="name" maxlength="25" placeholder="Ad" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    @if (Model.surname == null)
+                    {
+                        <input value="" class="form-control" type="text" name="surname" maxlength="30" placeholder="Soyad" />
+                    }
+                    else
+                    {
+                        <input value="@Model.surname" class="form-control" type="text" name="surname" maxlength="30" placeholder="Soyad" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    @if (Model.Rank == 0)
+                    {
+                        <select class="custom-select" name="yetkiF" id="yetkiF">
+                            <option>Personel</option>
+                            <option>Paydaş/Sahip</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select class="custom-select" name="yetkiF" id="yetkiF">
+                            <option>Personel</option>
+                            <option>Paydaş/Sahip</option>
+                        </select>
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                @if (Model.FirmID == null)
+                {
+                    <input value="@ViewBag.magazaID" class="form-control" type="hidden" name="FirmID" required="" />
+                }
+                else
+                {
+                    <input value="@Model.FirmID" class="form-control" type="hidden" name="FirmID" required="" />
+                }
+                <div class="clearfix"> </div>
+                <div align="center" class="sub_home">
+                    @if (ViewBag.ortaklar > 1)
+                    {
+                        <input type="button" class="btn btn-primary" onClick="confSubmitP(this.form);" value="Kaydet" id="button">
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-primary" onClick="confSubmit(this.form);" value="Kaydet" id="button">
+                    }
+
+
+                    <div class="clearfix"> </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            Gerekli alanları boş bırakmayın.
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function confSubmit(form) {
+        var e = document.getElementById("yetkiF");
+        var text = e.options[e.selectedIndex].text;
+
+        if (text == "Paydaş/Sahip") {
+            if (confirm("Firmanıza paydaş eklenicek eminmisiniz? Bu işlem geri alınamaz.")) {
+                form.submit();
+                document.getElementById("button").disabled = true;
+
+            }
+
+            else {
+                alert("İşlem iptal edildi. Mağazanıza ortak eklemediniz.");
+            }
+        }
+        else {
+            form.submit();
+            document.getElementById("button").disabled = true;
+        }
+    }
+
+    function confSubmitP(form) {
+        var e = document.getElementById("yetkiF");
+        var text = e.options[e.selectedIndex].text;
+
+        if (text == "Paydaş/Sahip") {
+            if (confirm("Firmanıza paydaş eklenicek eminmisiniz? Bu işlem geri alınamaz. Firmanıza yeni bir ortak eklendiği zaman paydaşlar arası net borç/alacak durum tablosu herkes için sıfırlanır ve bu hesap kişiler arası anlaşıldı olarak kabul görür. Ortaklar arası son durum tablosunu görmek için işlemi iptal edip, Muhasebe bölümünden Net Durum kısmına gidin. Ortak eklemeye devam etmek için Tamama basın")) {
+                form.submit();
+                document.getElementById("button").disabled = true;
+            }
+
+            else {
+                alert("İşlem iptal edildi. Firmanıza ortak eklemediniz.");
+            }
+        }
+        else {
+            form.submit();
+            document.getElementById("button").disabled = true;
+        }
+    }
+
+</script>

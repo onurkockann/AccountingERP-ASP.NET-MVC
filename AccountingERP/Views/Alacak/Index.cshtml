@@ -1,0 +1,356 @@
+﻿
+@{
+    ViewBag.Title = "Alacaklar ve Borçlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Model m = new Model();
+
+    FirmUser u = m.FirmUsers.FirstOrDefault(x => x.username == HttpContext.Current.User.Identity.Name);
+
+    List<Payee> alacaklar = m.Payees.Where(x => x.FirmID == u.FirmID).ToList();
+    List<Debt> verecekler = m.Debts.Where(x => x.FirmID == u.FirmID).ToList();
+}
+@using AccountingERP.Models
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Alacak/Verecekler</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <!-- Main row -->
+    <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-6 connectedSortable">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Alacakların Listesi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped ">
+                        <thead>
+                            <tr>
+                                <th>Açıklama</th>
+                                <th>Miktar(TL)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Payee item in alacaklar)
+                            {
+                                <tr>
+                                    <td>@item.Description</td>
+                                    <td>@item.Amount</td>
+                                    <td>
+                                        @if (u.Rank != -1)
+                                        {
+                                            <a href="#" class="btn btn-success rounded doneAl" data-donealid="@item.PayeesID"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                            <a href="#" class="btn btn-danger rounded silAl" data-silalid="@item.PayeesID"><i class="fa fa-eraser" aria-hidden="true"></i> </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="btn btn-success rounded"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                            <a href="#" class="btn btn-danger rounded"><i class="fa fa-eraser" aria-hidden="true"></i> </a>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Açıklama</th>
+                                <th>Miktar(TL)</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Alacak Notu Ekle</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body" align="center">
+                    <form action="/Alacak/EkleAl" method="post" role="form" onsubmit="subFrA()">
+                        <div class="form-group col-md-4">
+                            <label>Açıklama</label>
+                            <input value="" class="form-control" type="text" name="Aciklama" placeholder="Açıklama giriniz" required="" maxlength="255" style="border-block-color:red" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Alacak Miktarı(TL)</label>
+                            <input value="" class="form-control" type="number" name="Miktar" placeholder="Alacak miktarını giriniz" required="" min="0.001" step=".001" max="9999999999999999" style="border-block-color:red" />
+                        </div>
+                        @if (u.Rank != -1)
+                        {
+                            <button type="submit" class="btn btn-success" id="buttona">Kaydet</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-success" id="buttona">Kaydet</button>
+                        }
+
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </section>
+
+        <!-- /.Left col -->
+        <!-- right col (We are only adding the ID to make the widgets sortable)-->
+        <section class="col-lg-6 connectedSortable">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Borçların Listesi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example2" class="table table-bordered table-striped ">
+                        <thead>
+                            <tr>
+                                <th>Açıklama</th>
+                                <th>Miktar(TL)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Debt item in verecekler)
+                            {
+                                <tr>
+                                    <td>@item.Description</td>
+                                    <td>@item.Amount</td>
+                                    <td>
+                                        @if (u.Rank != -1)
+                                        {
+                                            <a href="#" class="btn btn-success rounded doneVer" data-doneverid="@item.DebtsID"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                            <a href="#" class="btn btn-danger rounded silVer" data-silverid="@item.DebtsID"><i class="fa fa-eraser" aria-hidden="true"></i> </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="btn btn-success rounded"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                            <a href="#" class="btn btn-danger rounded"><i class="fa fa-eraser" aria-hidden="true"></i> </a>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Açıklama</th>
+                                <th>Miktar(TL)</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Borç Notu Ekle</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body" align="center">
+                    <form action="/Alacak/EkleVer" method="post" role="form" onsubmit="subFrB()">
+                        <div class="form-group col-md-4">
+                            <label>Açıklama</label>
+                            <input value="" class="form-control" type="text" name="Aciklama" placeholder="Açıklama giriniz" required="" maxlength="255" style="border-block-color:red" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Borç Miktarı(TL)</label>
+                            <input value="" class="form-control" type="number" name="Miktar" placeholder="Borç miktarını giriniz" required="" min="0.001" step=".001" max="9999999999999999" style="border-block-color:red" />
+                        </div>
+                        @if (u.Rank != -1)
+                        {
+                            <button type="submit" class="btn btn-success" id="buttonb">Kaydet</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-success" id="buttonb">Kaydet</button>
+                        }
+
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </section>
+        <!-- right col -->
+    </div>
+    <!-- /.row (main row) -->
+</section>
+
+
+@section scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function subFrA() {
+            document.getElementById("buttona").disabled = true;
+        }
+        function subFrB() {
+            document.getElementById("buttonb").disabled = true;
+        }
+
+
+
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
+
+        $(function () {
+            $("#example2").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+        });
+
+
+        $(".doneAl").click(function () {
+
+            var sonuc = confirm("Alacak alındı, listeden silinip gelirlere eklenecek devam edilsinmi?");
+            if (sonuc) {
+                var doneAlID = $(this).data("donealid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Alacak/DoneAl/" + doneAlID,
+                        success: function () {
+                            alert("Kayit silindi ve gelirlere eklendi");
+                            window.location.replace("/Alacak/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+
+        $(".silAl").click(function () {
+
+            var sonuc = confirm("Alacak notu silinecek, devam edilsinmi?");
+            if (sonuc) {
+                var silAlID = $(this).data("silalid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Alacak/SilAl/" + silAlID,
+                        success: function () {
+                            alert("Kayit silindi");
+                            window.location.replace("/Alacak/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+
+        $(".doneVer").click(function () {
+
+            var sonuc = confirm("Borç ödendi, listeden silinip giderlere eklenecek devam edilsinmi?");
+            if (sonuc) {
+                var doneVerID = $(this).data("doneverid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Alacak/DoneVer/" + doneVerID,
+                        success: function () {
+                            alert("Kayit silindi ve giderlere eklendi");
+                            window.location.replace("/Alacak/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+
+        $(".silVer").click(function () {
+
+            var sonuc = confirm("Borç notu silinecek, devam edilsinmi?");
+            if (sonuc) {
+                var silVerID = $(this).data("silverid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Alacak/SilVer/" + silVerID,
+                        success: function () {
+                            alert("Kayit silindi");
+                            window.location.replace("/Alacak/Index");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
+
+            else {
+                alert("İşlem iptal edildi");
+
+            }
+        }
+        );
+    </script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script type="text/javascript">
+        function quest() {
+            Swal.fire(
+                'Gelirlerinizin detay sayfası',
+                'Bu bölümde gelirleriniz ile ilgili tüm detaylara erişebilirsiniz. Üst panelde gelirlerinize ait grafik dağılımını görebilir ve yeni gelir ekleyebilirsiniz. Alt panelde ise bütün gelir kayıt işlemlerinizi bir tabloda bulabilirsiniz!',
+                'question'
+            )
+        }
+    </script>
+
+}

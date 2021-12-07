@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Kayıt Ol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using AccountingERP.Models
+@model FirmUser
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title - Accounting ERP</title>
+</head>
+<body class="hold-transition login-page">
+    @if (ViewBag.FailMsg != null)
+    {
+        <br />
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Hata!</h5>
+            @ViewBag.FailMsg
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="login-logo">
+                <a href="/Home/Index"><b>Accounting ERP</b></a>
+            </div>
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Kayıt Ol</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="bs-stepper">
+                        <div class="bs-stepper-content">
+                            <form action="/User/RegisterUser" method="post" role="form" onsubmit="subFr()">
+                                <!-- your steps content here -->
+                                <div id="logins-part" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Firma Adı</label>
+                                        <input value="" class="form-control" type="text" name="FirmName" placeholder="Firma adını giriniz" maxlength="25" />
+                                    </div>
+                                    <hr />
+                                </div>
+                                <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Kullanıcı Adı</label>
+                                        <input value="" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Mail</label>
+                                        <input value="" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputFile">Şifre</label>
+                                        <input value="" class="form-control" type="text" name="pw" placeholder="Şifre" minlength="4" maxlength="25" required="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputFile">Şifre Tekrar</label>
+                                        <input value="" class="form-control" type="text" name="pwt" placeholder="Şifre" minlength="4" maxlength="25" required="" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-9" align="left">
+                                            <input type="checkbox" id="idkvkk" name="KVKK" value="ok" />
+                                            <label for="idkvkk">Şartları, politikaları ve kullanım koşullarını okudum kabul ediyorum.</label><br />
+                                        </div>
+                                        <div class="col-md-3" align="right">
+                                            <button type="submit" class="btn btn-success">Kayıt Ol!</button>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+
+</body>
+
+
+
+
+<script>
+    function subFr() {
+        document.getElementById("buttons").disabled = true;
+    }
+
+    // BS-Stepper Init
+    document.addEventListener('DOMContentLoaded', function () {
+        window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+    })
+</script>
+
+
+

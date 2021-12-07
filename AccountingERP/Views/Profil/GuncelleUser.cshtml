@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "GuncelleUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using AccountingERP.Models
+@model FirmUser
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h3 class="title">Profil Bilgileri Formu</h3>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Profil/Index" class="btn btn-danger btn-pri"><i class="fa fa-backward" aria-hidden="true"></i> Geri</a>
+            <div class="card-tools">
+            </div>
+        </div>
+        <div class="card-body" align="center">
+            <form action="/Profil/GuncelleUser" method="post" role="form" onsubmit="subFr()">
+                @if (Model != null)
+                {
+                    <input type="hidden" name="FirmUserID" value="@Model.FirmUserID" />
+                }
+                <div align="center" class="form-group col-md-6">
+                    <label>Kullanıcı Adı</label>
+                    @if (Model.username == null)
+                    {
+                        <input value="" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    else
+                    {
+                        <input value="@Model.username" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    <label>Mail</label>
+                    @if (Model.mail == null)
+                    {
+                        <input value="" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    else
+                    {
+                        <input value="@Model.mail" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    <label>Telefon</label>
+                    @if (Model.Phone == null)
+                    {
+                        <input value="+90" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
+                    }
+                    else
+                    {
+                        <input value="@Model.Phone" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    <label>Ad</label>
+                    @if (Model.name == null)
+                    {
+                        <input value="" class="form-control" type="text" name="name" maxlength="25" placeholder="Ad" />
+                    }
+                    else
+                    {
+                        <input value="@Model.name" class="form-control" type="text" name="name" maxlength="25" placeholder="Ad" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                <div align="center" class="form-group col-md-6">
+                    <label>Soyad</label>
+                    @if (Model.surname == null)
+                    {
+                        <input value="" class="form-control" type="text" name="surname" maxlength="30" placeholder="Soyad" />
+                    }
+                    else
+                    {
+                        <input value="@Model.surname" class="form-control" type="text" name="surname" maxlength="30" placeholder="Soyad" />
+                    }
+                    <div class="clearfix"> </div>
+                </div>
+                @if (Model.FirmID == null)
+                {
+                    <input value="@ViewBag.magazaID" class="form-control" type="hidden" name="FirmID" required="" />
+                }
+                else
+                {
+                    <input value="@Model.FirmID" class="form-control" type="hidden" name="FirmID" required="" />
+                }
+
+                <input value="@Model.Rank" class="form-control" type="hidden" name="Rank" required="" />
+
+                <div class="clearfix"> </div>
+                <div align="center" class="sub_home">
+                    <button type="submit" class="btn btn-primary" id="buttons">Kaydet</button>
+                    <div class="clearfix"> </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            Gerekli alanları boş bırakmayın.
+        </div>
+    </div>
+</section>
+
+<script>
+    function subFr() {
+        document.getElementById("buttons").disabled = true;
+    }
+</script>
+
+
