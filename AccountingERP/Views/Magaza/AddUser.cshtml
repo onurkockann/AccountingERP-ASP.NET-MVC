@@ -4,6 +4,15 @@
 }
 @using AccountingERP.Models
 @model FirmUser
+
+<style>
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+    }
+</style>
+
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -23,7 +32,7 @@
 
 
 <section class="content">
-    <div class="card">
+    <div class="card widgets2" style="margin-top: 25px; padding: 20px;">
         <div class="card-header">
             <a href="/Magaza/Index" class="btn btn-danger btn-pri"><i class="fa fa-backward" aria-hidden="true"></i> Geri</a>
             <div class="card-tools">
@@ -35,7 +44,7 @@
                 {
                     <input type="hidden" name="FirmUserID" value="@Model.FirmUserID" />
                 }
-                <div align="center" class="input-group mb-3 col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.username == null)
                     {
                         <input value="" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red " />
@@ -44,13 +53,9 @@
                     {
                         <input value="@Model.username" class="form-control" type="text" name="username" placeholder="Kullanıcı Adı" minlength="4" maxlength="25" required="" style="border-block-color:red" />
                     }
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-user"></span>
-                        </div>
-                    </div>
+                    
                 </div>
-                <div align="center" class="input-group mb-3 col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.pw == null)
                     {
                         <input value="" class="form-control" type="text" name="pw" placeholder="Şifre" minlength="4" maxlength="25" required="" style="border-block-color:red" />
@@ -59,13 +64,9 @@
                     {
                         <input value="@Model.pw" class="form-control" type="text" name="pw" placeholder="Şifre" minlength="4" maxlength="25" required="" style="border-block-color:red" />
                     }
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
+                    
                 </div>
-                <div align="center" class="input-group mb-3 col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.mail == null)
                     {
                         <input value="" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
@@ -74,13 +75,9 @@
                     {
                         <input value="@Model.mail" class="form-control" type="email" name="mail" placeholder="E Mail" maxlength="25" required="" style="border-block-color:red" />
                     }
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
-                        </div>
-                    </div>
+                    
                 </div>
-                <div align="center" class="input-group mb-3 col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.Phone == null)
                     {
                         <input value="+90" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
@@ -89,13 +86,9 @@
                     {
                         <input value="@Model.Phone" class="form-control" type="text" name="Phone" maxlength="25" placeholder="Telefon" />
                     }
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-phone"></span>
-                        </div>
-                    </div>
+                    
                 </div>
-                <div align="center" class="form-group col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.name == null)
                     {
                         <input value="" class="form-control" type="text" name="name" maxlength="25" placeholder="Ad" />
@@ -106,7 +99,7 @@
                     }
                     <div class="clearfix"> </div>
                 </div>
-                <div align="center" class="form-group col-md-6">
+                <div align="center" class="input-group mb-3 col-md-6" style="margin-bottom: 10px;">
                     @if (Model.surname == null)
                     {
                         <input value="" class="form-control" type="text" name="surname" maxlength="30" placeholder="Soyad" />
@@ -117,7 +110,7 @@
                     }
                     <div class="clearfix"> </div>
                 </div>
-                <div align="center" class="form-group col-md-6">
+                <div align="center" class="form-group col-md-6" style="margin-bottom: 10px;">
                     @if (Model.Rank == 0)
                     {
                         <select class="custom-select" name="yetkiF" id="yetkiF">

@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://kit.fontawesome.com/3db5af6df5.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -23,6 +27,8 @@
                     @if (@HttpContext.Current.User.Identity.Name == "")
                     {
                         <li>@Html.ActionLink("Ana sayfa", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Giriş yap", "Login", "User")</li>
+                        <li>@Html.ActionLink("Üye ol", "Register", "User")</li>
                     }
                     else
                     {
@@ -30,16 +36,19 @@
                     }
 
                 </ul>
-                @if (@HttpContext.Current.User.Identity.Name != "")
-                {
-                    <div align="right" style="color:white">
-                        @Html.ActionLink("Çıkış yap", "Logout", "User", new { area = "" }, new { @class = "navbar-left" })
-                    </div>
-                }
+                <ul class="nav navbar-nav" style="float:right";>
+                    @if (@HttpContext.Current.User.Identity.Name != "")
+                    {
+                        <li>
+                            @Html.ActionLink("Çıkış yap", "Logout", "User", new { area = "" }, new { @class = "navbar-left" })
+                        </li>
+                    }
+                </ul>
+                
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container body-content" style="margin-top: 15px">
         @if (ViewBag.DoneMsg != null)
         {
             <div class="alert alert-success alert-dismissible">

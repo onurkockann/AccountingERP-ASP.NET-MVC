@@ -2,14 +2,28 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Accounting ERP</h1>
-    <p class="lead">Firmanız için muhasebe takip uygulaması.</p>
+<style>
+.backgroundImage { 
+    background-image: url("https://www.medyasoft.com.tr/documents/basarilar/hayatholding.jpg");
+    background-size: cover;
+    opacity: 0.8;
+}
+    .widgets {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+        margin-right: 13px;
+        color: white;
+    }
+</style>
+
+<div class="jumbotron backgroundImage">
+    <h3 style="color: white; font-weight: bolder;">Accounting ERP</h3>
+    <p style="color: white; width: 23%;" class="lead">Firmanız için muhasebe takip uygulaması.</p>
     <div class="row">
-        <div class="col-md-6" align="right">
+        <div class="col-md-1" style="margin-right: 20px;"align="right">
             <p><a href="/User/Login" class="btn btn-primary btn-lg">Giriş Yap</a></p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-1">
             <p><a href="/User/Register" class="btn btn-primary btn-lg">Kayıt Ol</a></p>
         </div>
     </div>
@@ -17,18 +31,18 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Optimize..</h2>
+    <div class="col-md-4 widgets" style="width: 30%; background-color: #f0ad4e;">
+        <h3>Optimize..</h3>
         <p>
             Kayıt olarak mağaza bilgilerinizi düzenleyin. Gelir giderlerinizden oluşan net durumları ve muhasebe kayıtlarınızı sağlıklı bir şekilde takip edin.
         </p>
     </div>
-    <div class="col-md-4">
-        <h2>Paydaşlı Şirketlere Uyumlu</h2>
+    <div class="col-md-4 widgets" style="background-color: #337ab7;">
+        <h3>Paydaşlı Şirketlere Uyumlu</h3>
         <p>Ortaklarınız ile hesaplarınız karışmasın. Ortak hissedarlık çerçevesinde bütün paydaşların kendi aralarındaki alacak ve borç durumlarını en doğru şekilde analiz edin.</p>
     </div>
-    <div class="col-md-4">
-        <h2>Finansal Analiz</h2>
+    <div class="col-md-4 widgets" style="background-color: #d9534f;">
+        <h3>Finansal Analiz</h3>
         <p>Elde ettiğiniz geçmiş ve gelecek kayıtlar ile harcamalarınızın ve gelirlerinizin sirkülasyonuna göre finansal hamlelerinizi doğru yapın.</p>
     </div>
 </div>

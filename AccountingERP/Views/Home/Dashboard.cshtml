@@ -57,6 +57,24 @@
 @using AccountingERP.Models
 @model List <Article>
 <!-- Content Header (Page header) -->
+
+
+
+<style>
+    .widgets {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+        margin-right: 13px;
+        color: white;
+    }
+
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+        margin-right: 13px;
+    }
+</style>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -78,9 +96,9 @@
             <!-- ./col -->
             <!-- small box -->
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-3 col-6 widgets" style="background-color: #f0ad4e;">
                 <!-- small box -->
-                <div class="small-box bg-warning">
+                <div class="small-box">
                     <div class="inner">
                         <h3>@ViewBag.uyeler</h3>
 
@@ -89,31 +107,28 @@
                     <div class="icon">
                         <i class="ion ion-person-add"></i>
                     </div>
-                    <a href="/Magaza/Index" class="small-box-footer">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="/Magaza/Index" class="small-box-footer" style="text-decoration: none; color: white; font-weight: bolder;">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i> </a>
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-3 col-6 widgets" style="background-color: #337ab7;">
                 <!-- small box -->
-                <div class="small-box bg-danger">
+                <div class="small-box">
                     <div class="inner">
                         <h3>@ViewBag.netDurum TL</h3>
 
                         <p>Net Durum</p>
                     </div>
-                    <div class="icon">
-                        <i class="fa fa-money-bill"></i>
-                    </div>
-                    <a href="/NetDurum/Index" class="small-box-footer">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="/NetDurum/Index" class="small-box-footer" style="text-decoration: none; color: white; font-weight: bolder;">Detaylı bilgi <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
         </div>
         <!-- /.row -->
         <!-- Main row -->
-        <div class="row">
+        <div class="row" style="margin-top: 20px;">
             <!-- Left col -->
-            <div class="col-lg-7">
+            <div class="col-lg-7 widgets2" style="margin-right: 25px;">
                 <!-- Custom tabs (Charts with tabs) style="height:200%;" -->
                 <div class="card">
                     <div class="card-header">
@@ -135,13 +150,13 @@
                     <div class="card-body">
                         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                         <script type="text/javascript">
-                    google.charts.load('current', { 'packages': ['bar'] });
-                    google.charts.setOnLoadCallback(drawChart);
+                            google.charts.load('current', { 'packages': ['bar'] });
+                            google.charts.setOnLoadCallback(drawChart);
 
-                    function drawChart() {
+                            function drawChart() {
 
-                        var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
-                        @{
+                                var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                                @{
 
                             DateTime today = new DateTime();
                             today = DateTime.Now;
@@ -169,31 +184,31 @@
                             }
                         }
 
-                        var data = google.visualization.arrayToDataTable(dataRows);
+                                var data = google.visualization.arrayToDataTable(dataRows);
 
 
-                        var options = {
-                            chart: {
-                                title: 'Son 30 güne ait gelir gider tablonuz',
-                                subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                var options = {
+                                    chart: {
+                                        title: 'Son 30 güne ait gelir gider tablonuz',
+                                        subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                    }
+                                };
+
+                                var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                                chart.draw(data, google.charts.Bar.convertOptions(options));
                             }
-                        };
-
-                        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-
-                        chart.draw(data, google.charts.Bar.convertOptions(options));
-                    }
 
 
-                    function otuzGun() {
+                            function otuzGun() {
 
-                        google.charts.load('current', { 'packages': ['bar'] });
-                        google.charts.setOnLoadCallback(drawChart);
+                                google.charts.load('current', { 'packages': ['bar'] });
+                                google.charts.setOnLoadCallback(drawChart);
 
-                        function drawChart() {
+                                function drawChart() {
 
-                            var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
-                            @{
+                                    var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                                    @{
 
                                 ntdrm = 0;
 
@@ -222,32 +237,32 @@
                                 }
                             }
 
-                            var data = google.visualization.arrayToDataTable(dataRows);
+                                    var data = google.visualization.arrayToDataTable(dataRows);
 
 
-                            var options = {
-                                chart: {
-                                    title: 'Son 30 güne ait gelir gider tablonuz',
-                                    subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                    var options = {
+                                        chart: {
+                                            title: 'Son 30 güne ait gelir gider tablonuz',
+                                            subtitle: '30 günlük akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                        }
+                                    };
+
+                                    var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                                    chart.draw(data, google.charts.Bar.convertOptions(options));
                                 }
-                            };
 
-                            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+                            }
 
-                            chart.draw(data, google.charts.Bar.convertOptions(options));
-                        }
+                            function odGun() {
 
-                    }
+                                google.charts.load('current', { 'packages': ['bar'] });
+                                google.charts.setOnLoadCallback(drawChart);
 
-                    function odGun() {
+                                function drawChart() {
 
-                        google.charts.load('current', { 'packages': ['bar'] });
-                        google.charts.setOnLoadCallback(drawChart);
-
-                        function drawChart() {
-
-                            var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
-                            @{
+                                    var dataRows = [['Günler', 'Gelir', 'Gider', 'Kar']];
+                                    @{
                                 ntdrm = 0;
 
                                 today = new DateTime();
@@ -273,22 +288,22 @@
                                 }
                             }
 
-                            var data = google.visualization.arrayToDataTable(dataRows);
+                                    var data = google.visualization.arrayToDataTable(dataRows);
 
 
-                            var options = {
-                                chart: {
-                                    title: 'Son 2 haftaya ait gelir gider tablonuz',
-                                    subtitle: '2 haftalık akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                    var options = {
+                                        chart: {
+                                            title: 'Son 2 haftaya ait gelir gider tablonuz',
+                                            subtitle: '2 haftalık akışta net karınız: @ntdrm.ToString() @ViewBag.MKur',
+                                        }
+                                    };
+
+                                    var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                                    chart.draw(data, google.charts.Bar.convertOptions(options));
                                 }
-                            };
 
-                            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-
-                            chart.draw(data, google.charts.Bar.convertOptions(options));
-                        }
-
-                    }
+                            }
 
                         </script>
                         <div id="columnchart_material" style="width:100%; height:400px;" align="center"></div>
@@ -297,7 +312,7 @@
                 <!-- /.card -->
                 <!-- DIRECT CHAT -->
             </div>
-                <div class="col-lg-5">
+                <div class="col-lg-4 widgets2">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fas fa-book"></i> Mağaza Bloğu Ve Sistem Uyarıları</h3>
                         <div class="card-tools">
@@ -314,13 +329,13 @@
                             {
                                 if (item.FirmUser != null)
                                 {
-                                    <div class="direct-chat-msg right">
+                                    <div class="direct-chat-msg">
                                         <div class="direct-chat-infos clearfix">
                                             <span class="direct-chat-name float-right"> @item.FirmUser.username</span>
                                             <span class="direct-chat-timestamp float-left">@item.EventDate</span>
                                         </div>
                                         <!-- /.direct-chat-infos -->
-                                        <img class="direct-chat-img" src="~/sp/dist/img/spLogo.png" alt="Firm chat post">
+                                        <i class="far fa-comments"></i> Firm Chat Post
                                         <!-- /.direct-chat-img -->
                                         <div class="direct-chat-text">
                                             @item.Content
@@ -335,23 +350,23 @@
                                 }
                                 else
                                 {
-                                    <div class="direct-chat-msg">
-                                        <div class="direct-chat-infos clearfix">
-                                            <span class="direct-chat-name float-left"> Sistem</span>
-                                            <span class="direct-chat-timestamp float-right">@item.EventDate</span>
-                                        </div>
-                                        <!-- /.direct-chat-infos -->
-                                        <img class="direct-chat-img" src="~/sp/dist/img/spLogo.png" alt="Firm chat post">
-                                        <!-- /.direct-chat-img -->
-                                        <div class="direct-chat-text">
-                                            @item.Content
-                                            <div align="right">
-                                                <a href="#" class="btn btn-success rounded tdrSil" data-tdrid="@item.ArticleID"><i class="fa fa-check" aria-hidden="true"></i> </a>
-                                            </div>
+                        <div class="direct-chat-msg">
+                            <div class="direct-chat-infos clearfix">
+                                <span class="direct-chat-name float-left"> Sistem</span>
+                                <span class="direct-chat-timestamp float-right">@item.EventDate</span>
+                            </div>
+                            <!-- /.direct-chat-infos -->
+                            <i class="far fa-comments"></i> Firm Chat Post
+                            <!-- /.direct-chat-img -->
+                            <div class="direct-chat-text">
+                                @item.Content
+                                <div align="right">
+                                    <a href="#" class="btn btn-success rounded tdrSil" data-tdrid="@item.ArticleID"><i class="fa fa-check" aria-hidden="true"></i> </a>
+                                </div>
 
-                                        </div>
-                                        <!-- /.direct-chat-text -->
-                                    </div>
+                            </div>
+                            <!-- /.direct-chat-text -->
+                        </div>
                                 }
                             }
                             <hr />
@@ -394,33 +409,34 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
     function subFr() {
         document.getElementById("buttons").disabled = true;
     }
 
     $(".tdrSil").click(function () {
-        var sonuc = confirm("Gönderi mağazadan silinecek, işleme devam edilsinmi?");
-        if (sonuc) {
-            var tdrId = $(this).data("tdrid");
-            $.ajax(
-                {
-                    type: "POST",
-                    url: "/Home/PostSil/" + tdrId,
-                    success: function () {
-                        alert("Gönderi başarıyla kaldırıldı.");
-                        window.location.replace("/Home/Dashboard");
-                    },
-                    error: function () {
-                        alert("Hata oluştu");
-                    }
-                });
-        }
+            var sonuc = confirm("Gönderi mağazadan silinecek, işleme devam edilsinmi?");
+            if (sonuc) {
+                var tdrId = $(this).data("tdrid");
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Home/PostSil/" + tdrId,
+                        success: function () {
+                            alert("Gönderi başarıyla kaldırıldı.");
+                            window.location.replace("/Home/Dashboard");
+                        },
+                        error: function () {
+                            alert("Hata oluştu");
+                        }
+                    });
+            }
 
-        else {
-            alert("İşlem iptal edildi");
+            else {
+                alert("İşlem iptal edildi");
 
+            }
         }
-    }
     );
 
 </script>

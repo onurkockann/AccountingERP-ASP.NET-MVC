@@ -10,6 +10,15 @@
 }
 @using AccountingERP.Models
 @model FirmUser
+
+
+<style>
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+    }
+</style>
+
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -24,7 +33,7 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 widgets2" style="margin-right: 20px;">
 
                 <!-- Profile Image -->
                 <div class="card card-primary card-outline">
@@ -62,7 +71,7 @@
                 <!-- /.card -->
             </div>
             <!-- /.col -->
-            <div class="col-md-9">
+            <div class="col-md-8 widgets2" style="padding: 15px;">
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">

@@ -5,6 +5,16 @@
 }
 @using AccountingERP.Models
 @model List<FirmUser>
+
+
+
+<style>
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+        margin-right: 13px;
+    }
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="container-fluid">
@@ -20,7 +30,7 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 widgets2">
 
                 <!-- Profile Image -->
                 <div class="card card-dark card-outline">
@@ -73,7 +83,7 @@
                 <!-- /.card -->
             </div>
             <!-- /.col -->
-            <div class="col-md-9">
+            <div class="col-md-8 widgets2">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Firmaya kayıtlı olan kullanıcılar</h3>
@@ -185,7 +195,7 @@
                             </table>
                         </div>
                     </div><!-- /.card-body -->
-                    <div class="card-footer">
+                    <div class="card-footer" style="margin-bottom: 15px;">
                         @if (ViewBag.kisiYetki == 1)
                         {
                             <a href="/Magaza/AddUser/" class="btn btn-success btn-pri"><i class="fa fa-plus" aria-hidden="true"></i> Kullanıcı Ekle</a>

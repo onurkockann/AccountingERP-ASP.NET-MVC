@@ -50,6 +50,14 @@
 @using AccountingERP.Models
 @model List<FirmUser>
 
+
+<style>
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+    }
+</style>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -512,7 +520,7 @@
 
                 <!-- /.Left col -->
                 <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                <section class="col-lg-4">
+                <section class="col-lg-4 widgets2" style="padding: 20px;">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Yeni Para Aktarım İşlemi</h3>

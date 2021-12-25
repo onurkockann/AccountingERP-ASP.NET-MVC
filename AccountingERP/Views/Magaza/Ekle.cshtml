@@ -4,6 +4,16 @@
 }
 @using AccountingERP.Models
 @model Firm
+
+
+<style>
+    .widgets2 {
+        box-shadow: 0 1px 5px rgb(0 0 0 / 12%), 0 1px 8px rgb(0 0 0 / 24%) !important;
+        border-radius: 10px !important;
+        margin-right: 13px;
+    }
+</style>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -22,7 +32,7 @@
             <div class="card-tools">
             </div>
         </div>
-        <div class="card-body" align="center">
+        <div class="card-body widgets2" style="padding: 20px; margin-top: 25px;" align="center">
             <form action="/Magaza/Ekle" method="post" role="form" onsubmit="subFr()">
                 @if (Model != null)
                 {
@@ -76,7 +86,7 @@
                 <button type="submit" class="btn btn-primary" id="buttons">Kaydet</button>
             </form>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="margin-top: 20px;">
             Lütfen firma adını boş bırakmayın.
         </div>
     </div>
